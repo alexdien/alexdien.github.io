@@ -108,3 +108,20 @@ html,body,#root{width:100%;height:100%;overflow:hidden;background:#679454}
 .player-card h1,.player-card.is-collapsed h1{font-family:'Damion',cursive;font-style:normal;font-weight:400;letter-spacing:0}
 .golf-world .course-scene .hole-label{font-weight:500;line-height:1.3;padding:9px 25px 9px 12px}
 .card-title h2{letter-spacing:-.8px}
+
+/* Optional discoveries stay on the course, with native keyboard/touch controls. */
+.egg-hit{position:absolute;background:transparent;min-width:44px;min-height:44px;width:3.8%;height:6%;padding:0;transform:translate(-50%,-50%);z-index:2;border:2px solid transparent;border-radius:3px}
+.egg-hit:active{transform:translate(-50%,-50%)}
+.egg-hit:hover,.egg-hit:focus-visible{border-color:#f8ecc2;background:#fff5ce18}
+.clubhouse-window{left:17.5%;top:30.5%}
+.cart-passengers{width:3.5%;height:6.5%}
+.golf-world .course-scene .golf-ball{left:68%;top:56%;padding:17px;z-index:2}
+.golf-world .course-scene .golf-ball.putt-1{left:67%;top:54%}
+.curious-duck{transition:transform 2.8s ease-in-out}
+.pond-duck.is-curious{animation:none}
+.dj-dancer,.party-golfer{animation:dj-bounce .9s steps(2,end) infinite}
+.dancer-1{animation-delay:-.45s}
+.dj-lights{animation:dj-glow 1.8s ease-in-out infinite alternate}
+@keyframes dj-bounce{50%{translate:0 -3px}}
+@keyframes dj-glow{to{opacity:.45}}
+@media(prefers-reduced-motion:reduce){.curious-duck,.golf-world .course-scene .golf-ball{transition:none!important}.dj-dancer,.party-golfer,.dj-lights{animation:none!important}}

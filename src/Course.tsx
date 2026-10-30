@@ -5,6 +5,7 @@ import { courseTrees } from './navigation';
 import { puttingGreens } from './greens';
 import { Golfer } from './Golfer';
 import { SceneryDefs, GroundDetail, LongShadows, DetailedTree, Planting, PondDetails, ClubhouseDetails, ForegroundFrame } from './CourseScenery';
+import { ClubhouseParty, TravelPassengers } from './EasterEggs';
 import { useCart } from './useCart';
 export const holes = [
   { name: 'About me', subtitle: 'The clubhouse', x: 28, y: 30 },
@@ -23,6 +24,15 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  const toolsTrigger=useRef<HTMLButtonElement>(null);
  function closeTools(){setToolsOpen(false);toolsTrigger.current?.focus({preventScroll:true});}
  const [putts,setPutts]=useState(0);
+ const [curious,setCurious]=useState(false),[party,setParty]=useState(false),[travel,setTravel]=useState(false);
+ const [eggMessage,setEggMessage]=useState('');
+ const windowTaps=useRef(0),eggTimer=useRef<ReturnType<typeof setTimeout>|null>(null),duckTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+ useEffect(()=>()=>{if(eggTimer.current)clearTimeout(eggTimer.current);if(duckTimer.current)clearTimeout(duckTimer.current);},[]);
+ function announce(text:string){setEggMessage(text);if(eggTimer.current)clearTimeout(eggTimer.current);eggTimer.current=setTimeout(()=>setEggMessage(''),4000);}
+ function putt(){setPutts(p=>p+1);setCurious(true);onExplore();announce('You have an audience. The duck is checking out your putt.');if(duckTimer.current)clearTimeout(duckTimer.current);duckTimer.current=setTimeout(()=>setCurious(false),6500);}
+ function tapWindow(){onExplore();if(party){setParty(false);windowTaps.current=0;announce('Back to a quiet afternoon.');return;}windowTaps.current++;if(windowTaps.current>=3){setParty(true);announce('Clubhouse after hours. A silent set from Alex.');}else announce(windowTaps.current===1?'Was that a DJ booth in the window?':'One more knock…');}
+ function toggleTravel(){setTravel(v=>!v);onExplore();announce(travel?'Unpacked. Back to the course.':'Alex + his girlfriend, packed for a getaway. Click a fairway to head out.');}
+
  const [swinging,setSwinging]=useState(false);
  const swingTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  useEffect(()=>()=>{if(swingTimer.current)clearTimeout(swingTimer.current);},[]);
@@ -67,7 +77,7 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  {courseTrees.map(([x,y],i)=><DetailedTree key={i} x={x} y={y} scale={i%3===0?1.2:1}/>)}
  <g fill="#d8d7a1">{Array.from({length:35},(_,i)=><path key={i} d={`M${(i*137+28)%940} ${(i*73+28)%600}h3v3h-3z`}/>)}</g>
  <Planting/>
- <g transform="translate(562 310)"><g className="pond-duck"><path d="M0 0h12v5H0z" fill="#f5ecd0"/><path d="M9-5h6v7H9z" fill="#f5ecd0"/><path d="M15-2h4v3h-4z" fill="#d99a52"/><rect x="12" y="-4" width="1" height="1" fill="#254c38"/></g></g>
+ <g className="curious-duck" style={{transform:curious?`translate(${putts%2?603:593}px, ${putts%2?334:321}px)`:'translate(562px, 310px)'}}><g className={curious?'pond-duck is-curious':'pond-duck'}><path d="M0 0h12v5H0z" fill="#f5ecd0"/><path d="M9-5h6v7H9z" fill="#f5ecd0"/><path d="M15-2h4v3h-4z" fill="#d99a52"/><rect x="12" y="-4" width="1" height="1" fill="#254c38"/></g></g>
 
  {/* Tournament bunting, podium, and a neatly chalked practice range. */}
  <g><path d="M525 90v-25h235v25" fill="none" stroke="#e9deb5" strokeWidth="3"/>{Array.from({length:10},(_,i)=><path key={i} d={`M${530+i*23} 66h13v10h-5v6h-8z`} fill={i%2?'#f5e8bf':'#b94f3e'}/>)}<path d="M565 242h44v-8h40v8h44v20H565z" fill="#446b45"/><path d="M565 237h44v-8h40v8h44v20H565z" fill="#d9cba0"/></g>
@@ -76,20 +86,23 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  <g transform="translate(785 449)"><rect x="-10" y="30" width="90" height="27" fill="#c1ad7d"/><rect width="65" height="37" fill="#e8dab3"/><path d="M-7 0v-10h8v-10h49v10h22V0z" fill="#b45d47"/><rect x="9" y="8" width="47" height="19" fill="#38624a"/><path d="M10 29h45v5H10z" fill="#72573b"/><text x="32" y="21" textAnchor="middle" fontSize="9" fill="#f6eac6" fontFamily="monospace">19TH</text><rect x="11" y="40" width="8" height="9" fill="#8c6546"/><rect x="44" y="40" width="8" height="9" fill="#8c6546"/></g>
  {[{x:713,y:480},{x:749,y:518}].map(({x,y})=><g key={x} transform={`translate(${x} ${y})`}><rect x="-3" y="2" width="6" height="20" fill="#826641"/><path d="M-18 0v-7h7v-7h22v7h7v7z" fill="#efe1b3"/><path d="M-3-14h6V0h-6z" fill="#bf6147"/><path d="M-12 20h24v5h-24z" fill="#657343"/></g>)}
  <ClubhouseDetails/>
+ {party&&<ClubhouseParty/>}
  <g transform="translate(651 107)"><g className="resting-bird"><path d="M-6-3h4v-3h5v3h4v3H-6z" fill="#f6e7c0"/><path className="bird-wing" d="M-4-3h-6v-3h-5v-3h9v3h3z" fill="#eee4ba"/><path d="M6-3h4v2H6z" fill="#d39e4d"/></g></g>
  <g transform="translate(193 234)"><rect x="-10" y="-6" width="5" height="18" fill="#2c4937"/><rect x="15" y="-6" width="5" height="18" fill="#2c4937"/><rect x="-7" y="-12" width="24" height="27" fill="#b7b991"/><rect x="-9" y="-13" width="28" height="9" fill="#f2dfb3"/><rect x="-3" y="1" width="16" height="7" fill="#5b7354"/></g>
  <g className={cart.driving?'cart-tracks moving':'cart-tracks'}>{cart.tracks.map((point,i)=><g key={i} opacity={(i+1)/cart.tracks.length*.22} fill="#2b5339"><rect x={point.x-6} y={point.y} width="3" height="4"/><rect x={point.x+4} y={point.y} width="3" height="4"/></g>)}</g>
  {cart.destination&&<g transform={`translate(${cart.destination.x} ${cart.destination.y})`} opacity=".7" fill="none" stroke="#f8ecc2" strokeWidth="2"><path d="M-9-3v-6h6M3-9h6v6M9 3v6H3M-3 9h-6V3"/></g>}
- <g className="moving-cart" transform={`translate(${cart.position.x} ${cart.position.y})`}><path d="M-8-5-30 13v14h21l24-16z" fill="#283f32" opacity=".22"/><g transform={`rotate(${cart.heading})`}><ellipse cx="3" cy="6" rx="17" ry="13" fill="#244d343b"/><path d="M-15-12h5v11h-5zM10-12h5v11h-5zM-15 8h5v11h-5zM10 8h5v11h-5z" fill="#263e32"/><rect x="-11" y="-17" width="22" height="36" fill="#c45e43"/><rect x="-10" y="-11" width="20" height="9" fill="#a9cfbb"/><rect x="-8" y="3" width="16" height="9" fill="#f2d9a5"/><rect x="-14" y="-20" width="28" height="10" fill="#fcf1cd"/><path d="M-8-17h16v3H-8z" fill="#ded1a5"/><rect x="-8" y="-23" width="4" height="3" fill="#faf1ca"/><rect x="4" y="-23" width="4" height="3" fill="#faf1ca"/></g></g>
+ <g className="moving-cart" transform={`translate(${cart.position.x} ${cart.position.y})`}><path d="M-8-5-30 13v14h21l24-16z" fill="#283f32" opacity=".22"/><g transform={`rotate(${cart.heading})`}><ellipse cx="3" cy="6" rx="17" ry="13" fill="#244d343b"/><path d="M-15-12h5v11h-5zM10-12h5v11h-5zM-15 8h5v11h-5zM10 8h5v11h-5z" fill="#263e32"/><rect x="-11" y="-17" width="22" height="36" fill="#c45e43"/><rect x="-10" y="-11" width="20" height="9" fill="#a9cfbb"/><rect x="-8" y="3" width="16" height="9" fill="#f2d9a5"/><rect x="-14" y="-20" width="28" height="10" fill="#fcf1cd"/><path d="M-8-17h16v3H-8z" fill="#ded1a5"/><rect x="-8" y="-23" width="4" height="3" fill="#faf1ca"/><rect x="4" y="-23" width="4" height="3" fill="#faf1ca"/>{travel&&<TravelPassengers/>}</g></g>
  <Golfer swinging={swinging}/>
  <rect width="960" height="620" fill="url(#evening-sun)"/>
  <rect width="960" height="110" fill="url(#northern-haze)"/>
  </svg>
+ <button className="egg-hit clubhouse-window" onClick={tapWindow} aria-label={party?'End the clubhouse DJ set':'Knock on the clubhouse window'} aria-pressed={party} title="Knock, knock…"/>
+ <button className="egg-hit cart-passengers" style={{left:`${cart.position.x/960*100}%`,top:`${cart.position.y/620*100}%`}} onClick={toggleTravel} aria-label={travel?'Unpack the traveling couple’s cart':'Pack the cart for a getaway with my girlfriend'} aria-pressed={travel} title="Room for two?"/>
  <button className="practice-swing" style={{left:'44%',top:'76%'}} onClick={swing} disabled={swinging} aria-label="Take a practice swing">{swinging?'Nice shot.':'Practice swing'} <span aria-hidden="true">↗</span></button>
  
  {holes.map((hole,i)=><button key={hole.name} className="hole" data-hole={i+1} style={{left:`${hole.x}%`,top:`${hole.y}%`}} onClick={()=>onSelect(i)} aria-label={`Hole ${i+1}: ${hole.name}`}><span className="flag"><span>{i+1}</span></span><span className="hole-label">{hole.name}<b>↗</b></span></button>)}
  {portfolio.projects.map((project,i)=><button key={i} className={`trophy-marker ${preview===i?'selected':''}`} style={{left:`${67+(i-(portfolio.projects.length-1)/2)*8}%`,top:'37%'}} onPointerEnter={e=>{if(e.pointerType==='mouse')showPreview(i);}} onFocus={()=>showPreview(i)} onClick={()=>showPreview(i)} aria-label={`Preview ${project.title}`} aria-expanded={preview===i} aria-controls="course-project-preview"><svg width="24" height="28" viewBox="0 0 24 28" shapeRendering="crispEdges" aria-hidden="true"><path d="M5 2h14v13h-4v5h4v5H5v-5h4v-5H5zM1 4h4v8H1zM19 4h4v8h-4z" fill="#e8c36c"/><path d="M8 3h3v10H8z" fill="#fff1b9"/></svg><span>0{i+1}</span></button>)}
- <button className={`golf-ball putt-${putts%2}`} onClick={()=>setPutts(p=>p+1)} aria-label="Putt the golf ball for fun" title="A little practice putt"><span/></button><span className="putt-status" aria-live="polite">{putts>0?'Nice touch!':''}</span>
+ <button className={`golf-ball putt-${putts%2}`} onClick={putt} aria-label="Putt the golf ball for fun" title="A little practice putt"><span/></button>
  </div>
  <ForegroundFrame x={camera.x*.035} y={camera.y*.035}/>
  <nav className="course-dock" aria-label="Main navigation">
@@ -101,7 +114,7 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  <button className="tools-drive" onClick={()=>{cart.driveTo({x:690,y:340});onExplore();closeTools();}} aria-label="Drive the cart to the tournament green">Take the cart for a spin <span>↗</span></button><small>Keyboard: arrows to pan · + / − to zoom · Home to reset</small>
  </section>}
  </nav>
- <div className={`cart-toast ${cart.message?'is-visible':''}`} role="status" aria-live="polite" aria-atomic="true">{cart.message}</div>
+ <div className={`cart-toast ${eggMessage||cart.message?'is-visible':''}`} role="status" aria-live="polite" aria-atomic="true">{eggMessage||cart.message}</div>
  {preview!==null&&<aside id="course-project-preview" className="course-project-preview" aria-label={`${portfolio.projects[preview].title} preview`}><div className="preview-top"><span>SELECTED WORK / 0{preview+1}</span><button onClick={()=>{setPreview(null);viewport.current?.focus({preventScroll:true});}} aria-label="Close project preview">×</button></div><ProjectArtwork key={preview} index={preview}/><div className="preview-copy"><small>{portfolio.projects[preview].category}</small><h2>{portfolio.projects[preview].title}</h2><p>{portfolio.projects[preview].description}</p><button className="primary" onClick={()=>onSelect(1,preview)}>Explore this project <span>↗</span></button></div></aside>}
  </div></div>;
 }
