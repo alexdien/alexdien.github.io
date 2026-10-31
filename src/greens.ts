@@ -5,8 +5,8 @@ export const puttingGreens = [
   [[287,407],[352,407],[352,419],[374,419],[374,454],[360,454],[360,471],[290,471],[290,460],[267,460],[267,425],[287,425]],
   [[723,377],[776,377],[776,387],[800,387],[800,421],[788,421],[788,439],[722,439],[722,426],[704,426],[704,392],[723,392]],
 ];
-export function isOnPuttingGreen({x,y}:{x:number;y:number},clearance=26):boolean {
-  return puttingGreens.some(points=>{
+export function isNearPolygons({x,y}:{x:number;y:number},polygons:number[][][],clearance:number):boolean {
+  return polygons.some(points=>{
     let inside=false;
     for(let i=0,j=points.length-1;i<points.length;j=i++){
       const [ax,ay]=points[j],[bx,by]=points[i];
@@ -17,4 +17,8 @@ export function isOnPuttingGreen({x,y}:{x:number;y:number},clearance=26):boolean
     }
     return inside;
   });
+}
+
+export function isOnPuttingGreen(point:{x:number;y:number},clearance=28):boolean {
+  return isNearPolygons(point,puttingGreens,clearance);
 }

@@ -3,15 +3,18 @@ import { portfolio } from './content';
 import { ProjectArtwork } from './ProjectArtwork';
 import { courseTrees } from './navigation';
 import { puttingGreens } from './greens';
+import { sandBunkers } from './bunkers';
 import { Golfer } from './Golfer';
-import { SceneryDefs, GroundDetail, LongShadows, DetailedTree, Planting, PondDetails, ClubhouseDetails, ForegroundFrame } from './CourseScenery';
-import { ClubhouseParty, TravelPassengers } from './EasterEggs';
+import { CourseBreeze, SceneryDefs, GroundDetail, LongShadows, DetailedTree, Planting, PondDetails, ClubhouseDetails, ForegroundFrame } from './CourseScenery';
+import { ClubhouseParty } from './EasterEggs';
+import { GolfCart } from './GolfCart';
+import { DJPlayer, PixelFireworks } from './DJPlayer';
 import { useCart } from './useCart';
 export const holes = [
-  { name: 'About me', subtitle: 'The clubhouse', x: 28, y: 30 },
-  { name: 'Selected projects', subtitle: 'Tournament green', x: 68, y: 23 },
-  { name: 'Experience', subtitle: 'The driving range', x: 32, y: 64 },
-  { name: 'Contact', subtitle: 'The 19th hole', x: 76, y: 67 },
+  { name: 'About me', subtitle: 'The clubhouse', x: 278/960*100, y: 205/620*100 },
+  { name: 'Selected projects', subtitle: 'Tournament green', x: 650/960*100, y: 150/620*100 },
+  { name: 'Experience', subtitle: 'The Experience green', x: 330/960*100, y: 442/620*100 },
+  { name: 'Contact', subtitle: 'The 19th hole', x: 752/960*100, y: 410/620*100 },
 ];
 export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)=>void;onExplore:()=>void}) {
  const viewport=useRef<HTMLDivElement>(null),scene=useRef<HTMLDivElement>(null);
@@ -24,19 +27,18 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  const toolsTrigger=useRef<HTMLButtonElement>(null);
  function closeTools(){setToolsOpen(false);toolsTrigger.current?.focus({preventScroll:true});}
  const [putts,setPutts]=useState(0);
- const [curious,setCurious]=useState(false),[party,setParty]=useState(false),[travel,setTravel]=useState(false);
+ const [curious,setCurious]=useState(false),[party,setParty]=useState(false);
  const [eggMessage,setEggMessage]=useState('');
  const windowTaps=useRef(0),eggTimer=useRef<ReturnType<typeof setTimeout>|null>(null),duckTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  useEffect(()=>()=>{if(eggTimer.current)clearTimeout(eggTimer.current);if(duckTimer.current)clearTimeout(duckTimer.current);},[]);
  function announce(text:string){setEggMessage(text);if(eggTimer.current)clearTimeout(eggTimer.current);eggTimer.current=setTimeout(()=>setEggMessage(''),4000);}
  function putt(){setPutts(p=>p+1);setCurious(true);onExplore();announce('You have an audience. The duck is checking out your putt.');if(duckTimer.current)clearTimeout(duckTimer.current);duckTimer.current=setTimeout(()=>setCurious(false),6500);}
- function tapWindow(){onExplore();if(party){setParty(false);windowTaps.current=0;announce('Back to a quiet afternoon.');return;}windowTaps.current++;if(windowTaps.current>=3){setParty(true);announce('Clubhouse after hours. A silent set from Alex.');}else announce(windowTaps.current===1?'Was that a DJ booth in the window?':'One more knock…');}
- function toggleTravel(){setTravel(v=>!v);onExplore();announce(travel?'Unpacked. Back to the course.':'Alex + his girlfriend, packed for a getaway. Click a fairway to head out.');}
+ function tapWindow(){onExplore();if(party){setParty(false);windowTaps.current=0;announce('Back to a quiet afternoon.');return;}windowTaps.current++;if(windowTaps.current>=3){setParty(true);announce('Clubhouse after hours unlocked. Load the Spotify player to start the set.');}else announce(windowTaps.current===1?'Was that a DJ booth in the window?':'One more knock…');}
 
  const [swinging,setSwinging]=useState(false);
  const swingTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  useEffect(()=>()=>{if(swingTimer.current)clearTimeout(swingTimer.current);},[]);
- function swing(){if(swinging)return;setSwinging(true);onExplore();swingTimer.current=setTimeout(()=>setSwinging(false),1600);}
+ function swing(){if(swinging)return;setSwinging(true);onExplore();swingTimer.current=setTimeout(()=>setSwinging(false),2400);}
 
  const cart=useCart();
  const drag=useRef<{id:number;x:number;y:number;startX:number;startY:number;moved:boolean}|null>(null);
@@ -64,7 +66,7 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  <path d="M113 190h20v-37h28v-28h45v-22h76v16h48v31h27v49h-20v40h-37v24h-61v42h-40v35h-47v-20h-27v-37h-12zM502 111h31V83h87v14h56v24h57v30h48v46h-26v28h-40v-19h-45v-26h-83v-22h-62v-24h-23zM181 421h30v-36h58v-21h42v16h37v32h47v40h46v47h-32v35h-52v-16h-51v-28h-63v-20h-62zM610 383h32v-26h51v14h62v-19h61v27h29v18h-21v33h-36v60h-29v37h-53v-20h-46v-46h-25v-40h-25z" fill="url(#fairway)"/>
  {puttingGreens.map((points,i)=><polygon key={i} points={points.map(p=>p.join(',')).join(' ')} fill="#bac77e"/>)}
  <path d="M140 141h18v-12h30v13h12v24h-14v18h-29v-12h-17zM349 229h32v13h17v35h-14v16h-35v-12h-17v-37h17zM677 271h32v12h21v27h-12v13h-41v-12h-17v-26h17zM403 383h23v12h21v32h-15v14h-28v-16h-16v-28h15zM790 475h24v13h19v30h-13v13h-31v-13h-15v-29h16z" fill="#537845"/>
- <path d="M140 135h18v-12h30v13h12v24h-14v18h-29v-12h-17zM349 223h32v13h17v35h-14v16h-35v-12h-17v-37h17zM677 265h32v12h21v27h-12v13h-41v-12h-17v-26h17zM403 377h23v12h21v32h-15v14h-28v-16h-16v-28h15zM790 469h24v13h19v30h-13v13h-31v-13h-15v-29h16z" fill="url(#sand)"/>
+ {sandBunkers.map((points,i)=><polygon key={i} points={points.map(p=>p.join(',')).join(' ')} fill="url(#sand)"/>)}
  <path d="M430 230h39v-19h66v18h42v24h39v36h22v58h-22v30h-52v-13h-55v-24h-50v-24h-45v-49h16z" fill="#4d7d4b"/>
  <path d="M438 238h39v-19h50v18h42v24h39v36h22v42h-22v30h-36v-13h-55v-24h-50v-24h-45v-33h16z" fill="#98b49d"/>
  <path d="M446 246h39v-19h34v18h42v24h39v36h22v26h-22v30h-20v-13h-55v-24h-50v-24h-45v-17h16z" fill="url(#pond-depth)"/>
@@ -73,37 +75,42 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  <path d="M0 540h98v-15h45v-15h46v-12h35v14h-31v14h-45v15h-46v16H0zM445 620V509h20v-52h22v-52h20v-28h14v32h-20v52h-22v52h-20v107zM839 0v77h15v77h14v104h-14v81h-14v53h15v99h-14v58h-14v71h-14v-75h14v-58h14v-91h-15v-61h14v-81h14V158h-14V81h-15V0z" fill="#c6c49a"/>
  <LongShadows/>
  <g transform="translate(110 190)"><path d="M-9 28h99v18H-9z" fill="#426d42"/><path d="M0-23h77v57H0z" fill="#e7dbb5"/><path d="M8-15h59v40H8z" fill="#f5eacb"/><path d="M-12-23v-12h10v-12h12v-12h56v12h12v12h11v12z" fill="#8b5041"/><path d="M0-35h77v6H0zM11-47h55v5H11z" fill="#b46c4f"/><path d="M29 0h19v34H29z" fill="#456553"/><path d="M9-8h13v15H9zM55-8h13v15H55z" fill="#88b9b0"/><path d="M-6 31h89v7H-6z" fill="#c3b28b"/><path d="M52-65h9v18h-9z" fill="#ded1ac"/></g>
- <g fill="#eae0b9"><path d="M100 254h99v16H100z"/></g><text x="149" y="265" textAnchor="middle" fontFamily="monospace" fontSize="9" fill="#385c42">CLUBHOUSE</text>
+ <g aria-hidden="true"><path d="M118 243h90v73h-90z" fill="#657349"/><path d="M118 240h86v72h-86z" fill="#c8bd96"/><path d="M122 244h78v64h-78z" fill="#d9cda8"/><path d="M122 265h78M122 287h78M147 244v64M174 244v64" stroke="#c2b68d" strokeWidth="2" fill="none"/></g>
  {courseTrees.map(([x,y],i)=><DetailedTree key={i} x={x} y={y} scale={i%3===0?1.2:1}/>)}
  <g fill="#d8d7a1">{Array.from({length:35},(_,i)=><path key={i} d={`M${(i*137+28)%940} ${(i*73+28)%600}h3v3h-3z`}/>)}</g>
  <Planting/>
  <g className="curious-duck" style={{transform:curious?`translate(${putts%2?603:593}px, ${putts%2?334:321}px)`:'translate(562px, 310px)'}}><g className={curious?'pond-duck is-curious':'pond-duck'}><path d="M0 0h12v5H0z" fill="#f5ecd0"/><path d="M9-5h6v7H9z" fill="#f5ecd0"/><path d="M15-2h4v3h-4z" fill="#d99a52"/><rect x="12" y="-4" width="1" height="1" fill="#254c38"/></g></g>
 
- {/* Tournament bunting, podium, and a neatly chalked practice range. */}
- <g><path d="M525 90v-25h235v25" fill="none" stroke="#e9deb5" strokeWidth="3"/>{Array.from({length:10},(_,i)=><path key={i} d={`M${530+i*23} 66h13v10h-5v6h-8z`} fill={i%2?'#f5e8bf':'#b94f3e'}/>)}<path d="M565 242h44v-8h40v8h44v20H565z" fill="#446b45"/><path d="M565 237h44v-8h40v8h44v20H565z" fill="#d9cba0"/></g>
- <g fill="none" stroke="#d2dfa2" strokeWidth="2" opacity=".65"><rect x="266" y="455" width="70" height="37"/><rect x="282" y="463" width="38" height="20"/><path d="M205 515h190M205 530h190M220 500v35m35-35v35m35-35v35m35-35v35m35-35v35m35-35v35"/></g>
- <g fill="#376947">{[215,250,285,320,355].map(x=><rect key={x} x={x} y="513" width="23" height="13"/>)}</g><g fill="#fbefcf">{[229,264,299,334,369].map(x=><rect key={x} x={x} y="515" width="3" height="3"/>)}</g>
  <g transform="translate(785 449)"><rect x="-10" y="30" width="90" height="27" fill="#c1ad7d"/><rect width="65" height="37" fill="#e8dab3"/><path d="M-7 0v-10h8v-10h49v10h22V0z" fill="#b45d47"/><rect x="9" y="8" width="47" height="19" fill="#38624a"/><path d="M10 29h45v5H10z" fill="#72573b"/><text x="32" y="21" textAnchor="middle" fontSize="9" fill="#f6eac6" fontFamily="monospace">19TH</text><rect x="11" y="40" width="8" height="9" fill="#8c6546"/><rect x="44" y="40" width="8" height="9" fill="#8c6546"/></g>
  {[{x:713,y:480},{x:749,y:518}].map(({x,y})=><g key={x} transform={`translate(${x} ${y})`}><rect x="-3" y="2" width="6" height="20" fill="#826641"/><path d="M-18 0v-7h7v-7h22v7h7v7z" fill="#efe1b3"/><path d="M-3-14h6V0h-6z" fill="#bf6147"/><path d="M-12 20h24v5h-24z" fill="#657343"/></g>)}
  <ClubhouseDetails/>
  {party&&<ClubhouseParty/>}
  <g transform="translate(651 107)"><g className="resting-bird"><path d="M-6-3h4v-3h5v3h4v3H-6z" fill="#f6e7c0"/><path className="bird-wing" d="M-4-3h-6v-3h-5v-3h9v3h3z" fill="#eee4ba"/><path d="M6-3h4v2H6z" fill="#d39e4d"/></g></g>
- <g transform="translate(193 234)"><rect x="-10" y="-6" width="5" height="18" fill="#2c4937"/><rect x="15" y="-6" width="5" height="18" fill="#2c4937"/><rect x="-7" y="-12" width="24" height="27" fill="#b7b991"/><rect x="-9" y="-13" width="28" height="9" fill="#f2dfb3"/><rect x="-3" y="1" width="16" height="7" fill="#5b7354"/></g>
+
  <g className={cart.driving?'cart-tracks moving':'cart-tracks'}>{cart.tracks.map((point,i)=><g key={i} opacity={(i+1)/cart.tracks.length*.22} fill="#2b5339"><rect x={point.x-6} y={point.y} width="3" height="4"/><rect x={point.x+4} y={point.y} width="3" height="4"/></g>)}</g>
  {cart.destination&&<g transform={`translate(${cart.destination.x} ${cart.destination.y})`} opacity=".7" fill="none" stroke="#f8ecc2" strokeWidth="2"><path d="M-9-3v-6h6M3-9h6v6M9 3v6H3M-3 9h-6V3"/></g>}
- <g className="moving-cart" transform={`translate(${cart.position.x} ${cart.position.y})`}><path d="M-8-5-30 13v14h21l24-16z" fill="#283f32" opacity=".22"/><g transform={`rotate(${cart.heading})`}><ellipse cx="3" cy="6" rx="17" ry="13" fill="#244d343b"/><path d="M-15-12h5v11h-5zM10-12h5v11h-5zM-15 8h5v11h-5zM10 8h5v11h-5z" fill="#263e32"/><rect x="-11" y="-17" width="22" height="36" fill="#c45e43"/><rect x="-10" y="-11" width="20" height="9" fill="#a9cfbb"/><rect x="-8" y="3" width="16" height="9" fill="#f2d9a5"/><rect x="-14" y="-20" width="28" height="10" fill="#fcf1cd"/><path d="M-8-17h16v3H-8z" fill="#ded1a5"/><rect x="-8" y="-23" width="4" height="3" fill="#faf1ca"/><rect x="4" y="-23" width="4" height="3" fill="#faf1ca"/>{travel&&<TravelPassengers/>}</g></g>
- <Golfer swinging={swinging}/>
+ <g className="moving-cart" transform={`translate(${cart.position.x} ${cart.position.y})`}><GolfCart wheelStep={cart.wheelStep} direction={cart.facing}/></g>
+ {/* A compact tee aims right across the fairway at the existing Experience green. */}
+ <g aria-hidden="true" transform="translate(-75 0)">
+  <path d="M190 433h49v43h-49z" fill="#587547"/>
+  <path d="M193 436h43v36h-43z" fill="#91a66a"/>
+  <path d="M193 436h43v9h-43zM193 454h43v9h-43z" fill="#a2b478"/>
+  <path d="M232 438h5v4h-5zM232 466h5v4h-5z" fill="#f5edcf"/>
+
+ </g>
+ <g transform="translate(-210 -44)"><Golfer swinging={swinging}/></g>
+ <CourseBreeze/>
  <rect width="960" height="620" fill="url(#evening-sun)"/>
  <rect width="960" height="110" fill="url(#northern-haze)"/>
  </svg>
  <button className="egg-hit clubhouse-window" onClick={tapWindow} aria-label={party?'End the clubhouse DJ set':'Knock on the clubhouse window'} aria-pressed={party} title="Knock, knock…"/>
- <button className="egg-hit cart-passengers" style={{left:`${cart.position.x/960*100}%`,top:`${cart.position.y/620*100}%`}} onClick={toggleTravel} aria-label={travel?'Unpack the traveling couple’s cart':'Pack the cart for a getaway with my girlfriend'} aria-pressed={travel} title="Room for two?"/>
- <button className="practice-swing" style={{left:'44%',top:'76%'}} onClick={swing} disabled={swinging} aria-label="Take a practice swing">{swinging?'Nice shot.':'Practice swing'} <span aria-hidden="true">↗</span></button>
+ <button className="practice-swing" style={{left:'15%',top:'80%'}} onClick={swing} disabled={swinging} aria-label="Take a practice swing">{swinging?'Nice shot.':'Practice swing'} <span aria-hidden="true">↗</span></button>
  
  {holes.map((hole,i)=><button key={hole.name} className="hole" data-hole={i+1} style={{left:`${hole.x}%`,top:`${hole.y}%`}} onClick={()=>onSelect(i)} aria-label={`Hole ${i+1}: ${hole.name}`}><span className="flag"><span>{i+1}</span></span><span className="hole-label">{hole.name}<b>↗</b></span></button>)}
  {portfolio.projects.map((project,i)=><button key={i} className={`trophy-marker ${preview===i?'selected':''}`} style={{left:`${67+(i-(portfolio.projects.length-1)/2)*8}%`,top:'37%'}} onPointerEnter={e=>{if(e.pointerType==='mouse')showPreview(i);}} onFocus={()=>showPreview(i)} onClick={()=>showPreview(i)} aria-label={`Preview ${project.title}`} aria-expanded={preview===i} aria-controls="course-project-preview"><svg width="24" height="28" viewBox="0 0 24 28" shapeRendering="crispEdges" aria-hidden="true"><path d="M5 2h14v13h-4v5h4v5H5v-5h4v-5H5zM1 4h4v8H1zM19 4h4v8h-4z" fill="#e8c36c"/><path d="M8 3h3v10H8z" fill="#fff1b9"/></svg><span>0{i+1}</span></button>)}
  <button className={`golf-ball putt-${putts%2}`} onClick={putt} aria-label="Putt the golf ball for fun" title="A little practice putt"><span/></button>
  </div>
+ {party&&<><PixelFireworks/><DJPlayer/></>}
  <ForegroundFrame x={camera.x*.035} y={camera.y*.035}/>
  <nav className="course-dock" aria-label="Main navigation">
  {holes.map((hole,i)=><button key={hole.name} onClick={()=>{setToolsOpen(false);setPreview(null);onSelect(i);}}><span className="dock-number">0{i+1}</span><span>{['About me','Projects','Experience','Contact'][i]}</span></button>)}
@@ -111,7 +118,7 @@ export function Course({onSelect,onExplore}:{onSelect:(i:number,project?:number)
  {toolsOpen&&<section id="course-tools-panel" className="course-tools-panel" aria-label="Course controls panel"><div className="tools-heading"><h2>Explore the course</h2><button onClick={closeTools} aria-label="Close course controls">×</button></div><p>Drag to look around. Click a fairway to drive the cart. Please keep off the greens.</p>
  <div className="tools-zoom" role="group" aria-label="Course view controls"><button onClick={()=>zoomBy(-.2)} disabled={camera.zoom<=1} aria-label="Zoom out">−</button><output aria-label="Zoom level">{Math.round(camera.zoom*100)}%</output><button onClick={()=>zoomBy(.2)} disabled={camera.zoom>=2.2} aria-label="Zoom in">+</button><button className="tools-reset" onClick={reset} aria-label="Reset course view">Reset view</button></div>
  <div className="tools-landmarks" role="group" aria-label="Look around the course">{holes.map((hole,i)=><button key={i} onClick={()=>{focusHole(i);closeTools();}} aria-label={`Look at ${hole.subtitle}`}><span>0{i+1}</span>{hole.subtitle}<b>↗</b></button>)}</div>
- <button className="tools-drive" onClick={()=>{cart.driveTo({x:690,y:340});onExplore();closeTools();}} aria-label="Drive the cart to the tournament green">Take the cart for a spin <span>↗</span></button><small>Keyboard: arrows to pan · + / − to zoom · Home to reset</small>
+ <button className="tools-drive" onClick={()=>{cart.driveTo({x:690,y:350});onExplore();closeTools();}} aria-label="Drive the cart to the tournament green">Take the cart for a spin <span>↗</span></button><small>Keyboard: arrows to pan · + / − to zoom · Home to reset</small>
  </section>}
  </nav>
  <div className={`cart-toast ${eggMessage||cart.message?'is-visible':''}`} role="status" aria-live="polite" aria-atomic="true">{eggMessage||cart.message}</div>

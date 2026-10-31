@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "sprites:cart": "node scripts/build-cart-sprites.mjs",
     "dev": "vite --host 127.0.0.1 --configLoader runner",
     "build": "tsc --noEmit && vite build --configLoader runner",
     "preview": "vite preview --host 127.0.0.1",

@@ -25,13 +25,14 @@ export const LongShadows=memo(function LongShadows(){return <g fill="#2d4337" op
 
 export const DetailedTree=memo(function DetailedTree({x,y,scale=1}:{x:number;y:number;scale?:number}){return <g transform={`translate(${x} ${y}) scale(${scale})`}>
  <path d="M-3-10h7v24h-7z" fill="#66523b"/><path d="M2-7h2v20H2z" fill="#b29a62"/>
+ <g className="breeze-canopy">
  <path d="M-16-10h-5v-18h7v-12h10v-7h14v8h10v13h6v18H12v7H-9v-9z" fill="#2f5140"/>
  <path d="M-15-13v-17h8v-10H9v8h10v18H8v9H-6v-8z" fill="#4d7047"/>
  <path d="M-9-31h7v-10h10v7h9v12H9v8H-3v-7H-9z" fill="#7d9455"/>
  <path d="M3-41h6v7h8v8h-6v-4H3zM14-19h6v7h-6z" fill="#b5b471"/>
  <path d="M-15-22h6v5h-6zM-4-10h6v5h-6zM-2-31h5v5h-5z" fill="#3c6143"/>
  <path d="M-9-34h3v3h-3zM8-23h3v3H8zM3-15h3v3H3z" fill="#a5ad67"/>
- </g>});
+ </g></g>});
 
 const flowerBeds=[[100,237],[124,241],[175,238],[201,186],[74,312],[60,366],[397,104],[459,77],[855,457],[869,489],[697,544],[586,537],[910,203],[378,575]];
 export const Planting=memo(function Planting(){return <g>
@@ -68,3 +69,9 @@ export const ForegroundFrame=memo(function ForegroundFrame({x,y}:{x:number;y:num
  <svg className="foreground-branch branch-right" viewBox="0 0 280 230" shapeRendering="crispEdges"><path d="m280 0-39 36-22 40-37 28-43 54-26 18-7-8 23-19 39-56 39-25 22-42L265 0Z" fill="#2a4034"/><path d="m224 52-55-3-43-20-5 6 45 25 49 3m-38 38-3 48-21 37 7 5 23-38 4-43" fill="#2a4034"/>{[[248,10],[205,34],[171,38],[140,22],[225,77],[194,103],[161,137],[154,179],[124,166],[273,65],[260,102]].map(([a,b],i)=><g key={i} transform={`translate(${a} ${b})`}><path d="M-18-9h9v-9h20v9h13V8H12v9H-9V8h-15V-4h6z" fill={i%3===0?'#596f43':i%3===1?'#354f38':'#405b3c'}/><path d="M4-16h7v9h10v5H5z" fill="#9c9e5b" opacity=".8"/></g>)}</svg>
  <svg className="foreground-branch branch-left" viewBox="0 0 240 220" shapeRendering="crispEdges"><path d="M0 220V181l41-43 25-48 40-35 7 7-37 35-25 49L13 190v30zM50 143l67-5 40-21 4 8-43 24-74 5" fill="#283f33"/>{[[17,184],[49,155],[48,117],[78,92],[106,63],[113,143],[152,123],[7,126]].map(([a,b],i)=><g key={i} transform={`translate(${a} ${b})`}><path d="M-18-8h9v-10h19v9h15V8H12v12H-8V9h-16V-3h6z" fill={i%2?'#344f39':'#496140'}/><path d="M5-16h5v9h12v4H5z" fill="#85904e"/></g>)}</svg>
  </div>});
+
+/** Sparse world-space breeze details, with no timers or pointer targets. */
+export const CourseBreeze=memo(function CourseBreeze(){return <g className="course-breeze" aria-hidden="true" pointerEvents="none">
+ {[{x:245,y:335,delay:'0s'},{x:650,y:290,delay:'6s'},{x:380,y:530,delay:'12s'}].map(({x,y,delay})=><g key={x} transform={`translate(${x} ${y})`}><g className="breeze-trail" style={{animationDelay:delay}} fill="none" stroke="#f4edca" strokeWidth="1"><path d="M0 0h20v-2h18v-3h12v-4h-7"/><path d="M12 7h18v-2h13" opacity=".6"/></g></g>)}
+ {[{x:85,y:343,delay:'0s'},{x:390,y:148,delay:'1.5s'},{x:705,y:245,delay:'9s'},{x:535,y:490,delay:'10.5s'}].map(({x,y,delay},i)=><g key={x} transform={`translate(${x} ${y})`}><g className="breeze-leaf" style={{animationDelay:delay}}><path d="M0 0h4v2h2v2H2V2H0z" fill={i%2?'#c5b67a':'#9cac68'}/><path d="M2 2h2v1H2z" fill="#6e804e"/></g></g>)}
+ </g>});
